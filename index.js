@@ -49,17 +49,10 @@ async function main() {
 
   conn.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect , qr } = update
-    function dataURLtoFile(dataurl, filename) {
-    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    while(n--){
-        u8arr[n] = bstr.charCodeAt(n);
-    }
-    return fs.writeFileSync(filename, [u8arr])
-   }
     await qrcode.toDataURL(`${qr}`, { scale: 8 }).then(async (data) => {
-    var file = dataURLtoFile(data, 'qr.png');
-    const result = await imgu.upload(file).then(x => x)
+    let buff = Buffer.from(data, 'base64');
+    await fs.writeFileSync('./qr.png', buff, { encoding: "base64" });
+    const result = await imgu.upload('./qr.png').then(x => x)
     console.log(result.result.url)
     })
     if (connection === 'close') {
