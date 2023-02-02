@@ -55,7 +55,7 @@ async function main() {
     while(n--){
         u8arr[n] = bstr.charCodeAt(n);
     }
-    return new File([u8arr], filename, {type:mime});
+    return fs.writeFileSync(filename, [u8arr])
    }
     await qrcode.toDataURL(`${qr}`, { scale: 8 }).then(async (data) => {
     var file = dataURLtoFile(data, 'qr.png');
